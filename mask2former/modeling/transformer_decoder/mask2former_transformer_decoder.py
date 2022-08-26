@@ -395,6 +395,8 @@ class MultiScaleMaskedTransformerDecoder(nn.Module):
 
         for i in range(self.num_layers):
             level_index = i % self.num_feature_levels
+            # The queries that mask out all pixels are modified as no mask
+            # This can alleviate the effect of wrong masks
             attn_mask[torch.where(attn_mask.sum(-1) == attn_mask.shape[-1])] = False
             # attention: cross-attention first
             output = self.transformer_cross_attention_layers[i](
